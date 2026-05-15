@@ -2,20 +2,11 @@
 <html lang="ko">
 
 <head>
-    <style>
-  .larger-than-h1 {
-    font-size: 3em; /* h1 기본보다 더 크게 */
-    font-weight: bold;
-  }
-</style>
-
-<h1>공사중 입니다.</h1>
-<h1>공사중 입니다.</h1>
-<h1>공사중 입니다.</h1>
-<h1>공사중 입니다.</h1>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>스포츠토토</title>
 
@@ -32,21 +23,38 @@ href="{{ url_for('static', filename='css/style.css') }}">
 
 <div class="menu">
 
-<a href="/">🎰 로또 머신</a>
+<a href="/">🎰 로또</a>
 
-<a href="/board">📢 익명 게시판</a>
+<a href="/board">📢 게시판</a>
 
-<a href="/toto">⚽ 스포츠토토</a>
+<a href="/toto">⚽ 토토</a>
 
 </div>
 
-<div class="container">
+<div class="board-container">
 
-<h1>⚽ 스포츠토토</h1>
+<h1 class="board-title">
+⚾ 오늘의 KBO 경기(대규모공사중)
+</h1>
 
-<div class="post">
+<div class="toto-box">
 
-승무패 / 오버언더 / 배당 시스템 예정
+{% for m in matches %}
+
+<div class="match-card">
+
+    <div class="match-title">
+        {{ m.away }} VS {{ m.home }}
+    </div>
+
+    <div class="match-pitcher">
+        선발 :
+        {{ m.pitcher }}
+    </div>
+
+</div>
+
+{% endfor %}
 
 </div>
 

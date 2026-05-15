@@ -58,3 +58,170 @@ canvas { width: 100%; height: 100%; }
 .c3 { background: #28a745; color: white; } /* 21-30 */
 .c4 { background: #a333c8; color: white; } /* 31-40 */
 .c5 { background: #555555; color: white; } /* 41-45 */
+
+/* ===== 게시판 ===== */
+/* ===== 게시판 ===== */
+
+.board-container{
+    width: 90%;
+    max-width: 800px;
+    margin: 40px auto;
+}
+
+.board-title{
+    text-align: center;
+    margin-bottom: 30px;
+    color: #00f7ff;
+    text-shadow: 0 0 10px rgba(0,247,255,0.6);
+}
+
+/* 글쓰기 박스 */
+
+.write-box{
+    background: #111;
+    border: 2px solid #00f7ff;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+
+
+    box-shadow: 0 0 20px rgba(0,247,255,0.15);
+}
+
+.write-box textarea{
+    width: 100%;
+    height: 120px;
+
+    background: #000;
+    color: white;
+
+    border: 1px solid #00f7ff;
+    border-radius: 10px;
+
+    padding: 15px;
+    resize: none;
+
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.write-box textarea:focus{
+    outline: none;
+    box-shadow: 0 0 10px rgba(0,247,255,0.5);
+}
+
+/* 작성 버튼 */
+
+.write-btn{
+    margin-top: 15px;
+    width: 100%;
+    padding: 14px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #00f7ff;
+    color: black;
+
+    font-weight: bold;
+    font-size: 1em;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.write-btn:hover{
+    background: #00d5dc;
+    transform: scale(1.02);
+}
+
+/* 게시글 리스트 */
+
+.posts-area{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 게시글 카드 */
+
+.post-card{
+    background: #111;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    border: 1px solid #222;
+    border-left: 4px solid #00f7ff;
+
+    box-shadow: 0 0 12px rgba(0,0,0,0.4);
+
+    transition: 0.2s;
+}
+
+.post-card:hover{
+    transform: translateY(-2px);
+    border-color: #00f7ff;
+    box-shadow: 0 0 20px rgba(0,247,255,0.2);
+}
+
+/* 상단 영역 */
+
+.post-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 15px;
+
+    color: #00f7ff;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+/* 내용 */
+
+.post-content{
+    color: #ddd;
+    line-height: 1.7;
+    word-break: break-word;
+    font-size: 0.97em;
+}
+
+/* 시간 (선택) */
+
+.time{
+    color: #777;
+    font-size: 0.85em;
+}
+
+/* ===== 토토 ===== */
+
+.larger-title{
+    font-size: 2.5em;
+    text-align: center;
+    color: #00f7ff;
+}
+
+.toto-box{
+    width: 90%;
+    max-width: 900px;
+    margin-top: 30px;
+}
+
+.match-card{
+    background: #111;
+
+    border-left: 4px solid #00f7ff;
+
+    padding: 20px;
+    margin-bottom: 20px;
+
+    border-radius: 12px;
+
+    box-shadow: 0 0 12px rgba(0,0,0,0.4);
+
+    font-size: 1.1em;
+}

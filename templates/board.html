@@ -1,68 +1,77 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>익명 게시판</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>익명 게시판</title>
-
-<link rel="stylesheet"
-href="{{ url_for('static', filename='css/style.css') }}?v=999">
-
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
 
 <div class="topbar">
-</div>
-
-
-
-<!DOCTYPE html>
-<html lang="ko">
-
-<head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>익명 게시판</title>
-
-<link rel="stylesheet"
-href="{{ url_for('static', filename='css/style.css') }}">
-
-</head>
-
-<body>
-
-<div class="topbar">
-📢 ANONYMOUS BOARD
+    📢 ANONYMOUS BOARD
 </div>
 
 <div class="menu">
-
-<a href="/">🎰 로또 머신</a>
-
-<a href="/board">📢 익명 게시판</a>
-
-<a href="/toto">⚽ 스포츠토토</a>
-
+    <a href="/">🎰 로또</a>
+    <a href="/board">📢 게시판</a>
+    <a href="/toto">⚽ 토토</a>
 </div>
 
-<div class="container">
+<div class="board-container">
 
-<h1>📢 익명 게시판</h1>
+    <h1 class="board-title">📢 게시판</h1>
 
-<div class="post">
+    <!-- 게시글 목록 -->
+    <div class="posts-area">
 
-<textarea placeholder="내용 입력"></textarea>
+        {% for p in posts %}
 
-<br><br>
+        <div class="post-card">
 
-<button>작성</button>
+            <div class="post-top">
 
-</div>
+                <div>
+                    🥕 {{ p.nickname }}
+                </div>
+
+                <div>
+                    #{{ p.id }}
+                    · {{ p.created_at }}
+                    · 👁 {{ p.views }}
+                </div>
+
+            </div>
+
+            <div class="post-content">
+                {{ p.text }}
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- 글쓰기 -->
+    <form method="POST">
+
+        <div class="write-box">
+
+            <textarea
+                name="content"
+                placeholder="10글자 이상 입력하세요"></textarea>
+
+            <button class="write-btn" type="submit">
+                글 작성
+            </button>
+
+        </div>
+
+    </form>
 
 </div>
 

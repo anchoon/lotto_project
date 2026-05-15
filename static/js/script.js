@@ -92,3 +92,7 @@ function getColorClass(n) {
 }
 
 init(); animate();
+
+setInterval(() => {
+    location.reload()
+}, 60000)
