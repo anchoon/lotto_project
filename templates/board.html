@@ -2,6 +2,8 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>게시판</title>
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -9,6 +11,7 @@
 
 <body>
 
+<!-- ================= TOP ================= -->
 <div class="topbar">📢 ANONYMOUS BOARD</div>
 
 <div class="menu">
@@ -17,20 +20,19 @@
     <a href="/toto">⚽ 토토</a>
 </div>
 
+<!-- ================= MAIN ================= -->
 <div class="board-container">
 
     <h1 class="board-title">📢 게시판</h1>
 
-    <!-- 🔥 성공 토스트 (중앙 표시) -->
-    {% if success %}
+    <!-- ================= TOAST ================= -->
+    {% if request.args.get('success') %}
     <div class="toast show" onclick="this.remove()">
         ✅ 글 작성 완료
     </div>
     {% endif %}
 
-    <!-- ========================= -->
-    <!-- 게시글 목록 (위) -->
-    <!-- ========================= -->
+    <!-- ================= POSTS ================= -->
     <div class="posts-area">
 
         {% for p in posts %}
@@ -50,37 +52,35 @@
 
     </div>
 
-    <!-- ========================= -->
-    <!-- 글쓰기 (무조건 하단) -->
-    <!-- ========================= -->
+    <!-- ================= PAGING ================= -->
+    <div class="paging">
+
+        {% if page > 1 %}
+        <a href="/board?page={{ page - 1 }}">◀ 이전</a>
+        {% endif %}
+
+        <span>PAGE {{ page }}</span>
+
+        {% if has_next %}
+        <a href="/board?page={{ page + 1 }}">다음 ▶</a>
+        {% endif %}
+
+    </div>
+
+    <!-- ================= WRITE (BOTTOM FIXED FEEL) ================= -->
     <form method="POST">
 
         <div class="write-box">
 
             <textarea name="content" placeholder="10글자 이상 입력"></textarea>
 
-            <button class="write-btn" type="submit">
+            <button type="submit" class="write-btn">
                 작성
             </button>
 
         </div>
 
     </form>
-
-    <!-- ========================= -->
-    <!-- 페이징 -->
-    <!-- ========================= -->
-    <div class="paging">
-
-        {% if page > 1 %}
-        <a href="/board?page={{ page - 1 }}">이전</a>
-        {% endif %}
-
-        {% if has_next %}
-        <a href="/board?page={{ page + 1 }}">다음</a>
-        {% endif %}
-
-    </div>
 
 </div>
 

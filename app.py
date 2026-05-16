@@ -1,11 +1,14 @@
 import sqlite3
-import hashlib
+import random
 from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
 DB_FILE = "posts.db"
 
-vegetables = ["토마토","당근","가지","양파","오이","감자","버섯","배추","브로콜리"]
+vegetables = [
+    "토마토","당근","가지","양파","오이",
+    "감자","버섯","배추","브로콜리"
+]
 
 # ---------------- DB ----------------
 def init_db():
@@ -28,11 +31,10 @@ def init_db():
 init_db()
 
 # ---------------- 닉네임 ----------------
-def generate_nickname(ip):
-    h = int(hashlib.md5(ip.encode()).hexdigest(), 16)
-    return vegetables[h % len(vegetables)] + str(h % 100 + 1)
+def generate_nickname():
+    return f"{random.choice(vegetables)}{random.randint(1,999)}"
 
-# ---------------- 게시글 저장 ----------------
+# ---------------- 저장 ----------------
 def save_post(nickname, content):
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
@@ -45,7 +47,7 @@ def save_post(nickname, content):
     conn.commit()
     conn.close()
 
-# ---------------- 게시글 조회 ----------------
+# ---------------- 게시글 로드 ----------------
 def load_posts(page, per_page):
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
@@ -79,42 +81,38 @@ def load_posts(page, per_page):
 
     return posts, total
 
+# ---------------- INDEX ----------------
+@app.route("/")
+def index():
+    return render_template("index.html")
+
 # ---------------- BOARD ----------------
 @app.route("/board", methods=["GET", "POST"])
 def board():
+
+    page = request.args.get("page", 1, type=int)
+    per_page = 20
 
     # 글 작성
     if request.method == "POST":
         content = request.form.get("content")
 
         if content and len(content) >= 10:
-            ip = request.remote_addr
-            nickname = generate_nickname(ip)
-
+            nickname = generate_nickname()
             save_post(nickname, content)
 
-        return redirect("/board?success=1")
+        return redirect(f"/board?page={page}")
 
-    # 페이지
-    page = request.args.get("page", 1, type=int)
-    per_page = 20
-
+    # 글 목록
     posts, total = load_posts(page, per_page)
-
     has_next = page * per_page < total
 
     return render_template(
         "board.html",
         posts=posts,
         page=page,
-        has_next=has_next,
-        success=request.args.get("success")
+        has_next=has_next
     )
-
-# ---------------- INDEX ----------------
-@app.route("/")
-def index():
-    return render_template("index.html")
 
 # ---------------- TOTO ----------------
 @app.route("/toto")
