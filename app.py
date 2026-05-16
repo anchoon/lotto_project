@@ -1,40 +1,25 @@
 import sqlite3
 import hashlib
-
 from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
-
 DB_FILE = "posts.db"
 
-vegetables = [
-    "토마토", "당근", "가지",
-    "양파", "오이", "감자",
-    "버섯", "배추", "브로콜리"
-]
+vegetables = ["토마토","당근","가지","양파","오이","감자","버섯","배추","브로콜리"]
 
-# =========================
-# DB 초기화
-# =========================
-
+# ---------------- DB ----------------
 def init_db():
-
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
 
     cur.execute("""
-        CREATE TABLE IF NOT EXISTS posts (
-
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-            nickname TEXT,
-
-            content TEXT,
-
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-            views INTEGER DEFAULT 0
-        )
+    CREATE TABLE IF NOT EXISTS posts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nickname TEXT,
+        content TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        views INTEGER DEFAULT 0
+    )
     """)
 
     conn.commit()
@@ -42,75 +27,46 @@ def init_db():
 
 init_db()
 
-# =========================
-# 닉네임 생성
-# =========================
-
+# ---------------- 닉네임 ----------------
 def generate_nickname(ip):
+    h = int(hashlib.md5(ip.encode()).hexdigest(), 16)
+    return vegetables[h % len(vegetables)] + str(h % 100 + 1)
 
-    hash_value = int(
-        hashlib.md5(ip.encode()).hexdigest(),
-        16
-    )
-
-    veg = vegetables[
-        hash_value % len(vegetables)
-    ]
-
-    number = hash_value % 100 + 1
-
-    return f"{veg}{number}"
-
-# =========================
-# 글 저장
-# =========================
-
+# ---------------- 게시글 저장 ----------------
 def save_post(nickname, content):
-
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
 
     cur.execute(
-        """
-        INSERT INTO posts
-        (nickname, content)
-
-        VALUES (?, ?)
-        """,
+        "INSERT INTO posts (nickname, content) VALUES (?, ?)",
         (nickname, content)
     )
 
     conn.commit()
     conn.close()
 
-# =========================
-# 글 불러오기
-# =========================
-
-def load_posts():
-
+# ---------------- 게시글 조회 ----------------
+def load_posts(page, per_page):
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
 
+    offset = (page - 1) * per_page
+
     cur.execute("""
-        SELECT
-            id,
-            nickname,
-            content,
-            created_at,
-            views
-
+        SELECT id, nickname, content, created_at, views
         FROM posts
-
         ORDER BY id DESC
-    """)
+        LIMIT ? OFFSET ?
+    """, (per_page, offset))
 
     rows = cur.fetchall()
 
+    cur.execute("SELECT COUNT(*) FROM posts")
+    total = cur.fetchone()[0]
+
     conn.close()
 
-    return [
-
+    posts = [
         {
             "id": r[0],
             "nickname": r[1],
@@ -118,90 +74,52 @@ def load_posts():
             "created_at": r[3],
             "views": r[4]
         }
-
         for r in rows
     ]
 
-# =========================
-# 메인
-# =========================
+    return posts, total
 
-@app.route("/")
-def index():
-
-    return render_template("index.html")
-
-# =========================
-# 게시판
-# =========================
-
+# ---------------- BOARD ----------------
 @app.route("/board", methods=["GET", "POST"])
 def board():
 
+    # 글 작성
     if request.method == "POST":
-
         content = request.form.get("content")
 
         if content and len(content) >= 10:
-
-            ip = request.headers.get(
-                "X-Forwarded-For",
-                request.remote_addr
-            )
-
+            ip = request.remote_addr
             nickname = generate_nickname(ip)
 
-            save_post(
-                nickname,
-                content
-            )
+            save_post(nickname, content)
 
-        return redirect("/board")
+        return redirect("/board?success=1")
 
-    posts = load_posts()
+    # 페이지
+    page = request.args.get("page", 1, type=int)
+    per_page = 20
+
+    posts, total = load_posts(page, per_page)
+
+    has_next = page * per_page < total
 
     return render_template(
         "board.html",
-        posts=posts
+        posts=posts,
+        page=page,
+        has_next=has_next,
+        success=request.args.get("success")
     )
 
-# =========================
-# 토토
-# =========================
+# ---------------- INDEX ----------------
+@app.route("/")
+def index():
+    return render_template("index.html")
 
+# ---------------- TOTO ----------------
 @app.route("/toto")
 def toto():
-
-    # 임시 데이터
-    matches = [
-
-        {
-            "away": "KIA",
-            "home": "롯데",
-            "pitcher": "네일 vs 박세웅"
-        },
-
-        {
-            "away": "LG",
-            "home": "두산",
-            "pitcher": "임찬규 vs 알칸타라"
-        },
-
-        {
-            "away": "삼성",
-            "home": "SSG",
-            "pitcher": "원태인 vs 김광현"
-        }
-
-    ]
-
-    return render_template(
-        "toto.html",
-        matches=matches
-    )
-
-# =========================
+    return render_template("toto.html")
 
 if __name__ == "__main__":
-
     app.run(debug=True)

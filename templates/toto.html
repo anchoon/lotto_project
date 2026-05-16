@@ -1,62 +1,33 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>스포츠토토</title>
-
-<link rel="stylesheet"
-href="{{ url_for('static', filename='css/style.css') }}">
-
+<title>토토</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
 
-<div class="topbar">
-⚽ SPORTS TOTO SYSTEM
-</div>
+<div class="topbar">⚽ TOTO</div>
 
 <div class="menu">
-
-<a href="/">🎰 로또</a>
-
-<a href="/board">📢 게시판</a>
-
-<a href="/toto">⚽ 토토</a>
-
+<a href="/">홈</a>
+<a href="/board">게시판</a>
+<a href="/toto">토토</a>
 </div>
 
-<div class="board-container">
-
-<h1 class="board-title">
-⚾ 오늘의 KBO 경기(대규모공사중)
-</h1>
-
 <div class="toto-box">
+
+<h1 class="larger-title">KBO 경기</h1>
 
 {% for m in matches %}
 
 <div class="match-card">
-
-    <div class="match-title">
-        {{ m.away }} VS {{ m.home }}
-    </div>
-
-    <div class="match-pitcher">
-        선발 :
-        {{ m.pitcher }}
-    </div>
-
+    🏠 {{ m.home }} vs 🚀 {{ m.away }}<br>
+    🧢 {{ m.pitcher }}
 </div>
 
 {% endfor %}
-
-</div>
 
 </div>
 
